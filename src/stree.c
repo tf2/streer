@@ -35,18 +35,6 @@ void finalizeSuffixTree(SEXP s) {
     R_ClearExternalPtr(s);
 }
 
-
-SEXP makeMatchRef(int nmatches) {
-    SEXP myint;	
-	int *p_myint;
-	PROTECT(myint = NEW_INTEGER(1)); // Allocating storage space
-	p_myint = INTEGER_POINTER(myint); // ponit to SEXP object
-	p_myint[0] = AS_INTEGER(nmatches);
-	UNPROTECT(1);
-	return myint;
-}
- 
-
 SEXP makeStringRef(LST_String *string) {
     SEXP ans;
     PROTECT(ans = R_MakeExternalPtr(string, Rf_install("sstring"), R_NilValue));
@@ -257,9 +245,43 @@ SEXP R_lapplyStringSet(SEXP sset, SEXP fun, SEXP args) {
 return(data.els);
 }
 
+SEXP R_streePrint(SEXP stree) {
+	LST_STree *tree;
+	tree = getSuffixTreeRef(stree);
+	lst_debug_print_tree(tree);
+return(ScalarInteger(tree->num_strings));
+}
+
+typedef struct lst_path_end
+{
+	LST_Node    *node;
+	
+	LST_Edge    *edge;
+	u_int        offset;
+	
+} LST_PathEnd;
+
+// NB need to figure out how to use 'end' to return position in tree
+SEXP R_followStringSlow(SEXP stree, SEXP sset) {
+	LST_STree *tree;
+	LST_StringSet *set;
+	set = getStringSetRef(sset);
+	tree = getSuffixTreeRef(stree);
+	int mnmatches=0;
+	LST_PathEnd *end;
+	LST_String *string;
+	for (string = set->members.lh_first; string; string = string->set.le_next) {
+		u_int num_matches = lst_stree_follow_string_slow(tree, tree->root_node, string, end);	
+		if(num_matches>mnmatches)
+			mnmatches=num_matches;
+	}
+return(ScalarInteger(mnmatches));
+}
+
+/*
 typedef struct {
-	int i; /* Current location */
-	SEXP els; /* for calling the R function */
+	int i;
+	SEXP els; 
 } bfsSearchData ;
 
 void bfsSearchCallback(LST_Node *node, void *bfsdata) {
@@ -344,54 +366,4 @@ SEXP R_sSearch(SEXP stree, SEXP sset, SEXP add) {
 
 return(ScalarInteger(tree->num_strings));
 }
-
-
-SEXP R_streePrint(SEXP stree) {
-	LST_STree *tree;
-	tree = getSuffixTreeRef(stree);
-	lst_debug_print_tree(tree);
-return(ScalarInteger(tree->num_strings));
-}
-
-typedef struct lst_path_end
-{
-	LST_Node    *node;
-	
-	LST_Edge    *edge;
-	u_int        offset;
-	
-} LST_PathEnd;
-
-SEXP R_followStringSlow(SEXP stree, SEXP sset) {
-	LST_STree *tree;
-	LST_StringSet *set;
-	set = getStringSetRef(sset);
-	tree = getSuffixTreeRef(stree);
-
-	int mnmatches=0;
-	LST_PathEnd *end;
-	LST_String *string;
-	for (string = set->members.lh_first; string; string = string->set.le_next) {
-		u_int num_matches = lst_stree_follow_string_slow(tree, tree->root_node, string, end);
-		//u_int nstr = lst_string_get_length(string);
-		
-		if(num_matches>mnmatches) {
-			mnmatches=num_matches;
-		}
-		//printf("%i\t%i\t%i\n", i, num_matches, nstr);
-		//printf("%i\n", end->offset);
-		
-		//printf("%i\n", end->node->bus_visited);
-		//printf("%i\n", lst_string_print(end->edge->range.string));
-		
-	/*	LST_Edge *edge;
-		for (edge = end->node->kids.lh_first; edge; edge = edge->siblings.le_next) {
-			printf("%s\n", lst_string_print(edge->range.string));
-		}
-	*/	
-	//	i++;
-	}
-return(ScalarInteger(mnmatches));
-	//return(ScalarInteger(tree->num_strings));
-}
-
+*/

@@ -9,9 +9,7 @@ setGeneric("stree", function(x, ...) standardGeneric("stree"))
 setGeneric("stree_add", function(x, y, ...) standardGeneric("stree_add"))
 setGeneric("stree_remove", function(x, y, ...) standardGeneric("stree_remove"))
 setGeneric("stree_follow", function(x, y, ...) standardGeneric("stree_follow"))
-setGeneric("tprint", function(x, ...) standardGeneric("tprint"))
-setGeneric("sSearch", function(x, ...) standardGeneric("sSearch"))
-setGeneric("bfsSearch", function(x, ...) standardGeneric("bfsSearch"))
+setGeneric("stree_print", function(x, ...) standardGeneric("stree_print"))
 setGeneric("getLongestSubstring", function(stree, repeated = TRUE, range = c(1, 0), asCharacter = TRUE) standardGeneric("getLongestSubstring"))
 
 sstring <- function(..., class = "sstring", .els = as.character(unlist(list(...)))) {
@@ -73,19 +71,7 @@ setMethod("stree_follow", signature(x="stree", y="character"), function(x, y, ..
 	stree_follow(x, s)
 })
 
-setMethod("sSearch", "stree", function(tree, x, ...) {
-	if(class(x) == "sset") {
-		.Call("R_sSearch", tree@ref, x@ref)
-	}
-})
-
-setMethod("bfsSearch", "stree", function(tree, x, ...) {
-	if(class(x) == "sset") {
-		.Call("R_bfsSearch", tree@ref, x@ref)
-	}
-})
-
-setMethod("tprint", "stree", function(x, ...) {
+setMethod("stree_print", "stree", function(x, ...) {
 		.Call("R_streePrint", x@ref)
 })
 
@@ -122,7 +108,6 @@ setMethod("getLongestSubstring", "stree",
 			set
 	})
 
-
 randomDNA <- function(n, dna = c("A", "T", "G", "C")) {
 	paste(dna[round(runif(n, 1, length(dna)))], collapse="")
 }
@@ -143,61 +128,3 @@ example_stree1 <- function(n=60, n_trials=100) {
 	dist_test = sapply(dna, stree_follow, x=stree)
 list("null"=dist_null, "test"=dist_test)
 }
-
-pblapply <- function (X, FUN, ...) {
-    FUN <- match.fun(FUN)
-    if (!is.vector(X) || is.object(X)) 
-	X <- as.list(X)
-    B <- length(X)
-    if (!(interactive() && dopb() && B >= 1)) 
-	return(lapply(X, FUN, ...))
-    pb <- startpb(0, B)
-    rval <- vector("list", B)
-    for (i in 1:B) {
-        rval[i] <- list(FUN(X[[i]], ...))
-        setpb(pb, i)
-    }
-    close(pb)
-    names(rval) <- names(X)
-rval
-}
-
-
-pbsapply <- function (X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE) {
-    FUN <- match.fun(FUN)
-    answer <- pblapply(X = X, FUN = FUN, ...) # pb_specific_code
-    if (USE.NAMES && is.character(X) && is.null(names(answer))) 
-	names(answer) <- X
-    if (!identical(simplify, FALSE) && length(answer)) 
-	simplify2array(answer, higher = (simplify == "array"))
-    else answer
-}
-
-
-#setMethod("add", "stree", function(tree, x, ...) {
-#	if(class(x) == "sset") {
-#		.Call("R_streeAddRemove", tree@ref, x@ref, as.logical(TRUE))
-#	}
-#	if(class(x) == "character") {
-#		.Call("R_streeAddRemove", tree@ref, sset(x)@ref, as.logical(TRUE))
-#	}
-#})
-
-#setMethod("remove", "stree", function(tree, x, add=TRUE, ...) {
-#	if(class(x) == "sset") {
-#		.Call("R_streeAddRemove", tree@ref, x@ref, as.logical(FALSE))
-#	}
-#	if(class(x) == "character") {
-#		.Call("R_streeAddRemove", tree@ref, sset(x)@ref, as.logical(FALSE))
-#	}
-#})
-
-
-#setMethod("follow", "stree", function(tree, x, ...) {
-#	if(class(x) == "sset") {
-#		.Call("R_followStringSlow", tree@ref, x@ref)
-#	} else {
-#		.Call("R_followStringSlow", tree@ref, sset(x)@ref)	
-#	}
-#})
-
