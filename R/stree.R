@@ -134,10 +134,8 @@ dist_null
 
 example_stree1 <- function(n=60, n_trials=100) {
 	dna = unlist(lapply(rep(n, n_trials), randomDNA))
-	
 	stree = stree(dna)
 	add_seqs = sapply(unlist(lapply(rep(n, n_trials), randomDNA)), stree_add, x=stree)
-	
 	dist_null = sapply(unlist(lapply(rep(n, n_trials), randomDNA)), stree_follow, x=stree)
 	dist_test = sapply(dna, stree_follow, x=stree)
 list("null"=dist_null, "test"=dist_test)
