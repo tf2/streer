@@ -9,6 +9,7 @@ setGeneric("stree", function(x, ...) standardGeneric("stree"))
 setGeneric("stree_add", function(x, y, ...) standardGeneric("stree_add"))
 setGeneric("stree_remove", function(x, y, ...) standardGeneric("stree_remove"))
 setGeneric("stree_follow", function(x, y, ...) standardGeneric("stree_follow"))
+setGeneric("stree_follow2", function(x, y, ...) standardGeneric("stree_follow2"))
 setGeneric("stree_print", function(x, ...) standardGeneric("stree_print"))
 setGeneric("getLongestSubstring", function(stree, repeated = TRUE, range = c(1, 0), asCharacter = TRUE) standardGeneric("getLongestSubstring"))
 
@@ -71,6 +72,15 @@ setMethod("stree_follow", signature(x="stree", y="character"), function(x, y, ..
 	stree_follow(x, s)
 })
 
+setMethod("stree_follow2", signature(x="stree", y="sstring"), function(x, y, ...) {
+	.Call("R_followString", x@ref, y@ref)
+})
+
+setMethod("stree_follow2", signature(x="stree", y="character"), function(x, y, ...) {
+	s = sstring(y)
+	stree_follow2(x, s)
+})
+
 setMethod("stree_print", "stree", function(x, ...) {
 		.Call("R_streePrint", x@ref)
 })
@@ -112,10 +122,14 @@ randomDNA <- function(n, dna = c("A", "T", "G", "C")) {
 	paste(dna[round(runif(n, 1, length(dna)))], collapse="")
 }
 
+get_p_values <- function(xd, null_mean, null_sd) {
+	sapply(xd, function(x) 2 * pnorm(-abs((x - null_mean)/null_sd)))
+}
+
 get_null_distributions <- function(stree, n=60, ntests = 1000) {
 	seqsAdded = sapply(unlist(lapply(rep(n, ntests), randomDNA)), addRemove, x=stree)
 	dist_null = sapply(unlist(lapply(rep(n, ntests), randomDNA)), follow, x=stree)
-	dist_null
+dist_null
 }
 
 example_stree1 <- function(n=60, n_trials=100) {

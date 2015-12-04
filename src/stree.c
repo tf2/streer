@@ -278,6 +278,35 @@ SEXP R_followStringSlow(SEXP stree, SEXP sset) {
 return(ScalarInteger(mnmatches));
 }
 
+SEXP R_followString(SEXP stree, SEXP sstring) {
+	LST_STree *tree;
+	LST_String *string;
+	string = getStringRef(sstring);
+	tree = getSuffixTreeRef(stree);
+	LST_Node *node = tree->root_node;
+    LST_Edge *edge = NULL;
+    u_int done = 0, len, common;
+    u_int todo = string->num_items;
+    while (todo > 0) {
+        for (edge = node->kids.lh_first; edge; edge = edge->siblings.le_next) {
+            if (lst_string_eq(edge->range.string, edge->range.start_index, string, done)) {
+                break;
+            }
+        }
+        if (! edge) {
+            break;
+        }
+        len = lst_edge_get_length(edge);
+        common = lst_string_items_common(edge->range.string, edge->range.start_index, string, done, len);
+        done += common;
+        todo -= common;
+        node = edge->dst_node;
+    }
+return (done < string->num_items - 1) ? ScalarInteger(0) : ScalarInteger(node->id);
+}
+
+
+
 /*
 typedef struct {
 	int i;
