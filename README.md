@@ -39,7 +39,7 @@ boxplot(null_dists, xlab="length of query sequence", ylab=" max # character matc
 
 ## A probabilistic defintion of sequence match rates using the weight of evidence method defined by Turing (Banburismus)
 
-# increase the number of sequence to add to the suffix tree for fun
+# increase the number of sequences to add to the suffix tree for fun
 number_of_trials = 10000
 
 # create a new suffix tree and add number_of_trials random DNA sequences
