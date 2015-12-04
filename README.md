@@ -1,5 +1,5 @@
 # streer
-Suffix tree R package using the lst_stree C library
+Suffix tree R package using the libstree C library
 
 # INSTALL
 Download zip file or pull master branch
