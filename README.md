@@ -36,4 +36,18 @@ null_dists = apply(sapply(random_query_seq_lengths, seq, to=length(results), by=
 # generate a simple boxplot to illustrate the results
 boxplot(null_dists, xlab="length of query sequence", ylab=" max # character matches in tree", main=paste("Sequence queries - ", number_of_trials, " random trials", sep=""))
 
+# A probabilistic defintion of sequence match rates using the weight of evidence method defined by Turing (Banburismus)
+null_matches = sapply(unlist(lapply(rep(tree_seq_length, number_of_trials), randomDNA)), stree_follow, x=stree)
+null_mean = mean(null_matches)
+null_sd = sd(null_matches)
+
+query_dna = unlist(lapply(rep(tree_seq_length, number_of_trials), randomDNA))
+query_matches = sapply(query_dna, stree_follow, x=stree)
+
+h1 = 0.25/tree_seq_length
+h0 = get_p_values(query_matches, null_mean, null_sd)
+w.ev = log10(h1/h0)
+
+plot(w.ev, query_matches, xlab="Ban", ylab="# character matches")
+
 ```
