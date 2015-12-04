@@ -4,7 +4,7 @@ Suffix tree R package using the lst_stree C library
 # INSTALL
 Download zip file or pull master branch
 ```bash
-R CMD build streer
+R CMD build streer-master
 R CMD install streer_1.0.tar.gz
 ```
 
