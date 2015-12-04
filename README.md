@@ -36,7 +36,7 @@ null_dists = apply(sapply(random_query_seq_lengths, seq, to=length(results), by=
 # generate a simple boxplot to illustrate the results
 boxplot(null_dists, xlab="length of query sequence", ylab=" max # character matches in tree", main=paste("Sequence queries - ", number_of_trials, " random trials", sep=""))
 
-
+########################################################################################################################
 ## A probabilistic defintion of sequence match rates using the weight of evidence method defined by Turing (Banburismus)
 
 # increase the number of sequences to add to the suffix tree for fun
