@@ -1,0 +1,15 @@
+useDynLib("streer")
+
+exportPattern(".*")
+
+exportClasses("sstring", "sset", "stree")
+
+export(getCommonPrefix, getLongestSubstring)
+export(sstring, sset, stree)
+exportMethods("getLongestSubstring", "stree")
+
+exportMethods("lapply")
+
+
+
+

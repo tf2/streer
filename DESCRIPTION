@@ -1,0 +1,13 @@
+Package: streer
+Type: Package
+Title: Suffix tree
+Version: 1.0
+Date: 2015-11-23
+Author: Tomas William Fitzgerald
+Maintainer: <tf2@sanger.ac.uk>
+Depends:
+Description: C implementation
+License: GPL (>= 2)
+Repository: CRAN
+Date/Publication: 2011-03-17 05:44:51
+Packaged: 2011-06-19 16:35:28 UTC; tf2
