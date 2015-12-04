@@ -1,6 +1,4 @@
 # streer
-==========
-
 Suffix tree R package using the lst_stree C library
 
 # INSTALL
